@@ -10,11 +10,9 @@ save_dir = '/zhome/2c/d/213910/hpc_project_results/'
 def visualize_data(load_dir, building_ids):
     """Task 1: Visualize the input data for floor plans"""
     for bid in building_ids:
-        # Load domain and interior mask
         domain = np.load(join(load_dir, f"{bid}_domain.npy"))
         interior = np.load(join(load_dir, f"{bid}_interior.npy"))
         
-        # Create figure with two subplots
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
         
         # Plot domain (initial temperatures)
@@ -22,7 +20,6 @@ def visualize_data(load_dir, building_ids):
         ax1.set_title(f"Building {bid} - Initial Temperature")
         plt.colorbar(im1, ax=ax1, label='Temperature')
         
-        # Plot interior mask
         ax2.imshow(interior, cmap='binary')
         ax2.set_title(f"Building {bid} - Interior Mask")
         
@@ -40,7 +37,6 @@ def time_execution(num_buildings):
         total_buildings = len(all_building_ids)
         building_ids = all_building_ids[:num_buildings]
     
-    # Load floor plans
     all_u0 = []
     all_interior_mask = []
     load_start = time.time()
@@ -51,7 +47,6 @@ def time_execution(num_buildings):
     load_end = time.time()
     load_time = load_end - load_start
     
-    # Time Jacobi iterations
     MAX_ITER = 20_000
     ABS_TOL = 1e-4
     
@@ -68,8 +63,6 @@ def time_execution(num_buildings):
     print(f"Computation time: {computation_time:.2f} seconds")
     print(f"Total time: {total_time:.2f} seconds")
     print(f"Average time per building: {total_time/num_buildings:.2f} seconds")
-    
-    # Estimate time for all buildings
     estimated_total = total_time/num_buildings * total_buildings
     print(f"Estimated time for all {total_buildings} buildings: {estimated_total:.2f} seconds ({estimated_total/60:.2f} minutes)")
     
@@ -110,7 +103,7 @@ def profile_jacobi():
     """
     LOAD_DIR = '/dtu/projects/02613_2025/data/modified_swiss_dwellings/'
     with open(join(LOAD_DIR, 'building_ids.txt'), 'r') as f:
-        building_ids = f.read().splitlines()[:5]  # Profile with 5 buildings
+        building_ids = f.read().splitlines()[:5]
     
     for bid in building_ids:
         u0, interior_mask = hpc.load_data(LOAD_DIR, bid)
