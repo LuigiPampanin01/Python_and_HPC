@@ -4,8 +4,11 @@ import time
 from os.path import join
 import sys
 import simulate as hpc
+import os
 
-save_dir = '/zhome/2c/d/213910/hpc_project_results/'
+save_dir = os.path.join(os.getcwd(), "results/")
+os.makedirs(save_dir, exist_ok=True)
+
 
 def visualize_data(load_dir, building_ids):
     """Task 1: Visualize the input data for floor plans"""
