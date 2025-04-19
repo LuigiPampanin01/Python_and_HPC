@@ -1,11 +1,8 @@
 from os.path import join
 import sys
-
 import numpy as np
-
-
-import numpy as np
-from os.path import join
+from numba import jit
+import cupy as cp
 
 def load_data(load_dir, bid):
     """
@@ -60,45 +57,30 @@ def jacobi(u, interior_mask, max_iter, atol=1e-6):
 
     return u
 
-import cupy as cp
+@jit(nopython=True)
+def jacobi(u, interior_mask, max_iter, atol=1e-6):
+    u = np.copy(u)
+    nrows, ncols = u.shape
 
+    for it in range(max_iter):
+        delta = 0.0
+        u_new = np.copy(u)
 
-# def jacobi(u, interior_mask, max_iter, atol=1e-6):
-#     """
-#     Perform Jacobi iterations on the GPU using CuPy to approximate the solution to a Laplace-like PDE.
+        for i in range(1, nrows - 1):
+            for j in range(1, ncols - 1):
+                if interior_mask[i - 1, j - 1]:
+                    avg = 0.25 * (u[i, j - 1] + u[i, j + 1] + u[i - 1, j] + u[i + 1, j])
+                    diff = abs(u[i, j] - avg)
+                    if diff > delta:
+                        delta = diff
+                    u_new[i, j] = avg
 
-#     Parameters:
-#     - u: initial 2D NumPy array with boundary padding
-#     - interior_mask: boolean NumPy array indicating interior points
-#     - max_iter: maximum number of iterations
-#     - atol: absolute tolerance for convergence
+        u = u_new
 
-#     Returns:
-#     - u: updated 2D NumPy array after Jacobi iterations
-#     """
-#     # Convert inputs to CuPy arrays (GPU)
-#     u = cp.asarray(u)
-#     interior_mask = cp.asarray(interior_mask)
+        if delta < atol:
+            break
 
-#     # Copy to avoid modifying input
-#     u = cp.copy(u)
-
-#     for i in range(max_iter):
-#         # Jacobi update: average of neighbors
-#         u_new = 0.25 * (u[1:-1, :-2] + u[1:-1, 2:] + u[:-2, 1:-1] + u[2:, 1:-1])
-
-#         # Compute update only on interior points
-#         u_new_interior = u_new[interior_mask]
-#         delta = cp.abs(u[1:-1, 1:-1][interior_mask] - u_new_interior).max()
-
-#         # Update interior in u
-#         u[1:-1, 1:-1][interior_mask] = u_new_interior
-
-#         if delta < atol:
-#             break
-
-#     # Return result to CPU (NumPy array)
-#     return u.get()
+    return u
 
 
 def summary_stats(u, interior_mask):
