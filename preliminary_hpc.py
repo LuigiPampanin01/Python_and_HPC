@@ -6,9 +6,13 @@ import sys
 import simulate as hpc
 import os
 
-save_dir = os.path.join(os.getcwd(), "results/")
-os.makedirs(save_dir, exist_ok=True)
+# Results directory
+save_dir_results = os.path.join(os.getcwd(), "results/")
+os.makedirs(save_dir_results, exist_ok=True)
 
+# Visualization directory
+save_dir_visualization = os.path.join(os.getcwd(), "visualization/")
+os.makedirs(save_dir_visualization, exist_ok=True)
 
 def visualize_data(load_dir, building_ids):
     """Task 1: Visualize the input data for floor plans"""
@@ -27,7 +31,7 @@ def visualize_data(load_dir, building_ids):
         ax2.set_title(f"Building {bid} - Interior Mask")
         
         plt.tight_layout()
-        plt.savefig(f"{save_dir}building_{bid}_data.png")
+        plt.savefig(f"{save_dir_visualization}building_{bid}_data.png")
         plt.close()
         print(f"Visualized data for building {bid}")
 
@@ -94,7 +98,7 @@ def visualize_results(load_dir, building_ids):
         plt.colorbar(im2, ax=ax2, label='Temperature')
         
         plt.tight_layout()
-        plt.savefig(f"{save_dir}building_{bid}_before_after.png")
+        plt.savefig(f"{save_dir_results}building_{bid}_before_after.png")
         plt.close()
         print(f"Visualized results for building {bid}")
 
@@ -116,6 +120,7 @@ def profile_jacobi():
     print("Profiling completed. Run 'python -m line_profiler heat_diffusion_analysis.py.lprof' to see results.")
 
 if __name__ == '__main__':
+
     LOAD_DIR = '/dtu/projects/02613_2025/data/modified_swiss_dwellings/'
 
     # Get all building IDs

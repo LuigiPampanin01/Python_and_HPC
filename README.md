@@ -80,8 +80,10 @@ Replace `N` with the number of buildings (e.g. `10`).
 
 ## 📊 Output
 
-- Figures are saved to:  
+- Figures of results are saved to:  
   `results/`
+- Figures of initial data are save to:
+  `visualization/`
 
 - CSV-formatted results are printed to the terminal.
 
