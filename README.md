@@ -61,6 +61,14 @@ python preliminary_hpc.py --visualize-results
 ### 4. Profile the Jacobi Function
 
 Use `line_profiler` to profile the performance of the solver.
+To do that you need to uncomment @profile in the simulate.py in the jacobi function:
+
+```bash
+@profile
+def jacobi(u, interior_mask, max_iter, atol=1e-6):
+....
+```
+Then run:
 
 ```bash
 kernprof -l -v preliminary_hpc.py --profile
