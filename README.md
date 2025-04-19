@@ -9,7 +9,8 @@ This script, `preliminary_hpc.py`, is designed for simulating and analyzing heat
 ```text
 preliminary_hpc.py
 simulate.py
-results/         # Directory to save figures
+results/         # Directory to save results
+visualization/    # Directory to save initial state
 /dtu/projects/02613_2025/data/modified_swiss_dwellings/
     ├── building_ids.txt
     ├── {building_id}_domain.npy
