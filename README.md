@@ -9,7 +9,7 @@ This script, `preliminary_hpc.py`, is designed for simulating and analyzing heat
 ```text
 preliminary_hpc.py
 simulate.py
-/zhome/your_user/hpc_project_results/         # Directory to save figures
+results/         # Directory to save figures
 /dtu/projects/02613_2025/data/modified_swiss_dwellings/
     ├── building_ids.txt
     ├── {building_id}_domain.npy
@@ -81,7 +81,7 @@ Replace `N` with the number of buildings (e.g. `10`).
 ## 📊 Output
 
 - Figures are saved to:  
-  `/zhome/2c/d/213910/hpc_project_results/`
+  `results/`
 
 - CSV-formatted results are printed to the terminal.
 
