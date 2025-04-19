@@ -5,6 +5,9 @@ from os.path import join
 import sys
 import simulate as hpc
 import os
+from multiprocessing.pool import ThreadPool
+import math
+
 
 # Results directory
 save_dir_results = os.path.join(os.getcwd(), "results/")
@@ -136,6 +139,7 @@ if __name__ == '__main__':
             batch_sizes = [5, 10, 20]
             for size in batch_sizes:
                 time_execution(size)
+                
                 
         elif sys.argv[1] == "--visualize-results":
             sample_ids = all_building_ids[:3]

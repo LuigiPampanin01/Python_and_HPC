@@ -1,0 +1,57 @@
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 24737558: <timing_init> in cluster <dcc> Exited
+
+Job <timing_init> was submitted from host <n-62-30-8> by user <s243128> in cluster <dcc> at Sat Apr 19 15:58:47 2025
+Job was executed on host(s) <8*n-62-30-23>, in queue <hpc>, as user <s243128> in cluster <dcc> at Sat Apr 19 15:58:48 2025
+</zhome/b4/e/214014> was used as the home directory.
+</zhome/b4/e/214014/Documents/Python/Python_and_HPC> was used as the working directory.
+Started at Sat Apr 19 15:58:48 2025
+Terminated at Sat Apr 19 16:03:59 2025
+Results reported at Sat Apr 19 16:03:59 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J timing_init           
+#BSUB -q hpc                   
+#BSUB -W 10                       
+#BSUB -R "rusage[mem=250MB]"
+#BSUB -n 8                      
+#BSUB -R "span[hosts=1]"          
+#BSUB -o batch_outputs/timing_init_%J.out     
+#BSUB -e batch_error_output/timing_init_%J.err     
+
+source /dtu/projects/02613_2025/conda/conda_init.sh
+conda activate 02613
+
+python preliminary_hpc.py --time
+
+------------------------------------------------------------
+
+Exited with exit code 120.
+
+Resource usage summary:
+
+    CPU time :                                   311.01 sec.
+    Max Memory :                                 127 MB
+    Average Memory :                             120.20 MB
+    Total Requested Memory :                     2000.00 MB
+    Delta Memory :                               1873.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                5
+    Run time :                                   415 sec.
+    Turnaround time :                            312 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <batch_error_output/timing_init_24737558.err> for stderr output of this job.
+
