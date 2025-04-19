@@ -1,0 +1,78 @@
+
+--- Timing Results for 5 buildings ---
+Data loading time: 0.04 seconds
+Computation time: 49.37 seconds
+Total time: 49.41 seconds
+Average time per building: 9.88 seconds
+Estimated time for all 4571 buildings: 45172.32 seconds (752.87 minutes)
+
+--- Timing Results for 10 buildings ---
+Data loading time: 0.05 seconds
+Computation time: 82.21 seconds
+Total time: 82.27 seconds
+Average time per building: 8.23 seconds
+Estimated time for all 4571 buildings: 37603.77 seconds (626.73 minutes)
+
+--- Timing Results for 20 buildings ---
+Data loading time: 0.11 seconds
+Computation time: 210.72 seconds
+Total time: 210.82 seconds
+Average time per building: 10.54 seconds
+Estimated time for all 4571 buildings: 48183.24 seconds (803.05 minutes)
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 24737601: <timing_init> in cluster <dcc> Done
+
+Job <timing_init> was submitted from host <n-62-30-8> by user <s243128> in cluster <dcc> at Sat Apr 19 16:03:27 2025
+Job was executed on host(s) <8*n-62-31-5>, in queue <hpc>, as user <s243128> in cluster <dcc> at Sat Apr 19 16:03:27 2025
+</zhome/b4/e/214014> was used as the home directory.
+</zhome/b4/e/214014/Documents/Python/Python_and_HPC> was used as the working directory.
+Started at Sat Apr 19 16:03:27 2025
+Terminated at Sat Apr 19 16:09:13 2025
+Results reported at Sat Apr 19 16:09:13 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J timing_init           
+#BSUB -q hpc                   
+#BSUB -W 10                       
+#BSUB -R "rusage[mem=250MB]"
+#BSUB -n 8                      
+#BSUB -R "span[hosts=1]"          
+#BSUB -o batch_outputs/timing_init_%J.out     
+#BSUB -e batch_error_output/timing_init_%J.err     
+
+source /dtu/projects/02613_2025/conda/conda_init.sh
+conda activate 02613
+
+python preliminary_hpc.py --time
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   345.71 sec.
+    Max Memory :                                 133 MB
+    Average Memory :                             126.20 MB
+    Total Requested Memory :                     2000.00 MB
+    Delta Memory :                               1867.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                5
+    Run time :                                   398 sec.
+    Turnaround time :                            346 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <batch_error_output/timing_init_24737601.err> for stderr output of this job.
+
