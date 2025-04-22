@@ -2,7 +2,7 @@ from os.path import join
 import sys
 import numpy as np
 from numba import jit
-import cupy as cp
+from numba import cuda
 
 def load_data(load_dir, bid):
     """
@@ -23,65 +23,97 @@ def load_data(load_dir, bid):
     return u, interior_mask
 
 # @profile  # Uncomment this if using a memory profiler like line_profiler
-def jacobi(u, interior_mask, max_iter, atol=1e-6):
-    """
-    Perform Jacobi iterations to approximate the solution to a Laplace-like PDE.
+# def jacobi(u, interior_mask, max_iter, atol=1e-6):
+#     """
+#     Perform Jacobi iterations to approximate the solution to a Laplace-like PDE.
     
-    Parameters:
-    - u: initial 2D grid with boundary padding
-    - interior_mask: boolean mask specifying which interior points to update
-    - max_iter: maximum number of iterations
-    - atol: absolute tolerance for convergence criterion
+#     Parameters:
+#     - u: initial 2D grid with boundary padding
+#     - interior_mask: boolean mask specifying which interior points to update
+#     - max_iter: maximum number of iterations
+#     - atol: absolute tolerance for convergence criterion
     
-    Returns:
-    - u: updated 2D grid after Jacobi iterations
-    """
-    u = np.copy(u)  # Avoid modifying the input array
+#     Returns:
+#     - u: updated 2D grid after Jacobi iterations
+#     """
+#     u = np.copy(u)  # Avoid modifying the input array
 
-    for i in range(max_iter):
-        # Compute the new values by averaging neighbors (Jacobi update)
-        u_new = 0.25 * (u[1:-1, :-2] + u[1:-1, 2:] + u[:-2, 1:-1] + u[2:, 1:-1])
+#     for i in range(max_iter):
+#         # Compute the new values by averaging neighbors (Jacobi update)
+#         u_new = 0.25 * (u[1:-1, :-2] + u[1:-1, 2:] + u[:-2, 1:-1] + u[2:, 1:-1])
 
-        # Extract new values at the interior points
-        u_new_interior = u_new[interior_mask]
+#         # Extract new values at the interior points
+#         u_new_interior = u_new[interior_mask]
 
-        # Compute the maximum absolute difference (convergence check)
-        delta = np.abs(u[1:-1, 1:-1][interior_mask] - u_new_interior).max()
+#         # Compute the maximum absolute difference (convergence check)
+#         delta = np.abs(u[1:-1, 1:-1][interior_mask] - u_new_interior).max()
 
-        # Update only the interior points in u
-        u[1:-1, 1:-1][interior_mask] = u_new_interior
+#         # Update only the interior points in u
+#         u[1:-1, 1:-1][interior_mask] = u_new_interior
 
-        # Stop iteration if solution has converged
-        if delta < atol:
-            break
+#         # Stop iteration if solution has converged
+#         if delta < atol:
+#             break
 
-    return u
+#     return u
 
-@jit(nopython=True)
-def jacobi(u, interior_mask, max_iter, atol=1e-6):
-    u = np.copy(u)
+# @jit(nopython=True)
+# def jacobi(u, interior_mask, max_iter, atol=1e-6):
+#     u = np.copy(u)
+#     nrows, ncols = u.shape
+
+#     for it in range(max_iter):
+#         delta = 0.0
+#         u_new = np.copy(u)
+
+#         for i in range(1, nrows - 1):
+#             for j in range(1, ncols - 1):
+#                 if interior_mask[i - 1, j - 1]:
+#                     avg = 0.25 * (u[i, j - 1] + u[i, j + 1] + u[i - 1, j] + u[i + 1, j])
+#                     diff = abs(u[i, j] - avg)
+#                     if diff > delta:
+#                         delta = diff
+#                     u_new[i, j] = avg
+
+#         u = u_new
+
+#         if delta < atol:
+#             break
+
+#     return u
+
+@cuda.jit
+def jacobi_kernel(u, u_new, interior_mask):
+    i, j = cuda.grid(2)
     nrows, ncols = u.shape
 
-    for it in range(max_iter):
-        delta = 0.0
-        u_new = np.copy(u)
+    if 1 <= i < nrows - 1 and 1 <= j < ncols - 1:
+        if interior_mask[i - 1, j - 1]:
+            u_new[i, j] = 0.25 * (u[i-1, j] + u[i+1, j] + u[i, j-1] + u[i, j+1])
+        else:
+            u_new[i, j] = u[i, j]
 
-        for i in range(1, nrows - 1):
-            for j in range(1, ncols - 1):
-                if interior_mask[i - 1, j - 1]:
-                    avg = 0.25 * (u[i, j - 1] + u[i, j + 1] + u[i - 1, j] + u[i + 1, j])
-                    diff = abs(u[i, j] - avg)
-                    if diff > delta:
-                        delta = diff
-                    u_new[i, j] = avg
+def jacobi_cuda(u0, interior_mask, max_iter):
 
-        u = u_new
+    u = np.copy(u0)
+    nrows, ncols = u.shape
 
-        if delta < atol:
-            break
+    # Allocate device memory
+    u_d = cuda.to_device(u)
+    u_new_d = cuda.device_array_like(u)
+    mask_d = cuda.to_device(interior_mask)
 
-    return u
+    # Configure grid and block size
+    threadsperblock = (16, 16)
+    blockspergrid_x = (nrows + threadsperblock[0] - 1) // threadsperblock[0]
+    blockspergrid_y = (ncols + threadsperblock[1] - 1) // threadsperblock[1]
+    blockspergrid = (blockspergrid_x, blockspergrid_y)
 
+    for _ in range(max_iter):
+        jacobi_kernel[blockspergrid, threadsperblock](u_d, u_new_d, mask_d)
+        u_d, u_new_d = u_new_d, u_d  # swap buffers
+
+    return u_d.copy_to_host()
 
 def summary_stats(u, interior_mask):
     u_interior = u[1:-1, 1:-1][interior_mask]
