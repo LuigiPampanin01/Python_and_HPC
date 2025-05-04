@@ -37,8 +37,8 @@ def summary_stats(u, interior_mask):
         'pct_below_15':  pct_below_15,
     }
 
-if __name__ == '__main__':
-    LOAD_DIR = '/dtu/projects/02613_2025/data/modified_swiss_dwellings/'
+def main_cupy(LOAD_DIR = '/dtu/projects/02613_2025/data/modified_swiss_dwellings/', N=10):
+    
     with open(join(LOAD_DIR, 'building_ids.txt'), 'r') as f:
         all_building_ids = f.read().splitlines()
     total_plans = len(all_building_ids)        
@@ -86,3 +86,6 @@ if __name__ == '__main__':
     print(f"# Average time per plan:              {avg_per:.4f} s")
     print(f"# Estimated time for {total_plans} plans: {est_full/3600:.2f} h")
     print(cp.cuda.runtime.getDeviceProperties(0))
+
+if __name__ == "__main__":
+    main_cupy()

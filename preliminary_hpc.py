@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 # Import other Python files
 import simulate as hpc
 from Exercise_5_6 import parallell_main
+from exercise_9_10 import main_cupy
 from exercise_12 import main_optimized
 
 # Directories
@@ -112,6 +113,7 @@ def main():
     group.add_argument("--profile", action='store_true')
     group.add_argument("--static", action='store_true')
     group.add_argument("--dynamic", action='store_true')
+    group.add_argument("--cupy", action='store_true')
     parser.add_argument("N", type=int, nargs='?', default=1,
                         help="Number of buildings to process (default=1)")
     parser.add_argument("--optimized_final", action='store_true')
@@ -141,6 +143,10 @@ def main():
     elif args.dynamic:
         # This is Exercise 6
         parallell_main(all_ids, LOAD_DIR, 'dynamic')
+    elif args.cupy:
+        # This is Exercise 9 and 10
+        N = 20
+        main_cupy(LOAD_DIR, N)
     elif args.optimized_final:
         # This is Exercise 12
         all_N = 4571
