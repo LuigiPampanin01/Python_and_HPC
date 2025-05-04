@@ -1,0 +1,88 @@
+building_id, mean_temp, std_temp, pct_above_18, pct_below_15
+10000, 14.0123, 6.3674, 30.9410, 55.5423
+10009, 11.0001, 5.8111, 16.6713, 74.9724
+10014, 14.7442, 7.0377, 38.2637, 52.8084
+10019, 14.7355, 7.0303, 38.1492, 52.9293
+10029, 10.6160, 6.3173, 18.2556, 74.5130
+10031, 12.5071, 6.2784, 24.0447, 66.3951
+10051, 13.2890, 5.9991, 25.9769, 62.8599
+10053, 11.3665, 6.2612, 19.9511, 72.4105
+10056, 14.2201, 6.1795, 31.7635, 57.0617
+10064, 12.7170, 6.9642, 28.7914, 62.7569
+10075, 15.1569, 6.4405, 39.1209, 47.4561
+10079, 15.0944, 7.3139, 41.9000, 49.4497
+10080, 15.7777, 7.2806, 46.3658, 44.7110
+10082, 16.4657, 6.7133, 48.6435, 40.5614
+10083, 15.6392, 7.1208, 44.8555, 45.8864
+10084, 15.1006, 7.1505, 40.9065, 50.2665
+10085, 15.8689, 7.1928, 46.1830, 44.7257
+10086, 14.3915, 7.2156, 37.2566, 53.0188
+10087, 15.0732, 7.2755, 41.5324, 49.8971
+10089, 13.9898, 7.2763, 35.4586, 56.3640
+
+# GPU timing for 20 plans:            86.05 s
+# Average time per plan:              4.3023 s
+# Estimated time for 4571 plans: 5.46 h
+{'name': b'NVIDIA A100-PCIE-40GB MIG 1g.5gb', 'totalGlobalMem': 5100273664, 'sharedMemPerBlock': 49152, 'regsPerBlock': 65536, 'warpSize': 32, 'maxThreadsPerBlock': 1024, 'maxThreadsDim': (1024, 1024, 64), 'maxGridSize': (2147483647, 65535, 65535), 'clockRate': 1410000, 'totalConstMem': 65536, 'major': 8, 'minor': 0, 'textureAlignment': 512, 'texturePitchAlignment': 32, 'multiProcessorCount': 14, 'kernelExecTimeoutEnabled': 0, 'integrated': 0, 'canMapHostMemory': 1, 'computeMode': 0, 'maxTexture1D': 131072, 'maxTexture2D': (131072, 65536), 'maxTexture3D': (16384, 16384, 16384), 'concurrentKernels': 1, 'ECCEnabled': 1, 'pciBusID': 55, 'pciDeviceID': 0, 'pciDomainID': 0, 'tccDriver': 0, 'memoryClockRate': 1215000, 'memoryBusWidth': 640, 'l2CacheSize': 5242880, 'maxThreadsPerMultiProcessor': 2048, 'isMultiGpuBoard': 0, 'cooperativeLaunch': 1, 'cooperativeMultiDeviceLaunch': 1, 'deviceOverlap': 1, 'maxTexture1DMipmap': 32768, 'maxTexture1DLinear': 268435456, 'maxTexture1DLayered': (32768, 2048), 'maxTexture2DMipmap': (32768, 32768), 'maxTexture2DLinear': (131072, 65000, 2097120), 'maxTexture2DLayered': (32768, 32768, 2048), 'maxTexture2DGather': (32768, 32768), 'maxTexture3DAlt': (8192, 8192, 32768), 'maxTextureCubemap': 32768, 'maxTextureCubemapLayered': (32768, 2046), 'maxSurface1D': 32768, 'maxSurface1DLayered': (32768, 2048), 'maxSurface2D': (131072, 65536), 'maxSurface2DLayered': (32768, 32768, 2048), 'maxSurface3D': (16384, 16384, 16384), 'maxSurfaceCubemap': 32768, 'maxSurfaceCubemapLayered': (32768, 2046), 'surfaceAlignment': 512, 'asyncEngineCount': 1, 'unifiedAddressing': 1, 'streamPrioritiesSupported': 1, 'globalL1CacheSupported': 1, 'localL1CacheSupported': 1, 'sharedMemPerMultiprocessor': 167936, 'regsPerMultiprocessor': 65536, 'managedMemory': 1, 'multiGpuBoardGroupID': 0, 'hostNativeAtomicSupported': 0, 'singleToDoublePrecisionPerfRatio': 2, 'pageableMemoryAccess': 0, 'concurrentManagedAccess': 1, 'computePreemptionSupported': 1, 'canUseHostPointerForRegisteredMem': 1, 'sharedMemPerBlockOptin': 166912, 'pageableMemoryAccessUsesHostPageTables': 0, 'directManagedMemAccessFromHost': 0, 'uuid': b'QNk9\xf6w\xd5\xd0G\xc1\xf2\xd7\xec\x1e\xff\x7f', 'luid': b'', 'luidDeviceNodeMask': 0, 'persistingL2CacheMaxSize': 0, 'maxBlocksPerMultiProcessor': 32, 'accessPolicyMaxWindowSize': 134213632, 'reservedSharedMemPerBlock': 1024}
+Generating '/tmp/nsys-report-6412.qdstrm'
+[1/1] [0%                          ] exercise_10.nsys-rep[1/1] [0%                          ] exercise_10.nsys-rep[1/1] [0%                          ] exercise_10.nsys-rep[1/1] [11%                         ] exercise_10.nsys-rep[1/1] [===23%                      ] exercise_10.nsys-rep[1/1] [5%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [8%                          ] exercise_10.nsys-rep[1/1] [5%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [8%                          ] exercise_10.nsys-rep[1/1] [9%                          ] exercise_10.nsys-rep[1/1] [10%                         ] exercise_10.nsys-rep[1/1] [11%                         ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [8%                          ] exercise_10.nsys-rep[1/1] [9%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [5%                          ] exercise_10.nsys-rep[1/1] [5%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [5%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [5%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [8%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [8%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [8%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [8%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [8%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [8%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [6%                          ] exercise_10.nsys-rep[1/1] [7%                          ] exercise_10.nsys-rep[1/1] [8%                          ] exercise_10.nsys-rep[1/1] [9%                          ] exercise_10.nsys-rep[1/1] [10%                         ] exercise_10.nsys-rep[1/1] [11%                         ] exercise_10.nsys-rep[1/1] [12%                         ] exercise_10.nsys-rep[1/1] [13%                         ] exercise_10.nsys-rep[1/1] [14%                         ] exercise_10.nsys-rep[1/1] [=15%                        ] exercise_10.nsys-rep[1/1] [=16%                        ] exercise_10.nsys-rep[1/1] [=17%                        ] exercise_10.nsys-rep[1/1] [==18%                       ] exercise_10.nsys-rep[1/1] [==19%                       ] exercise_10.nsys-rep[1/1] [==20%                       ] exercise_10.nsys-rep[1/1] [==21%                       ] exercise_10.nsys-rep[1/1] [===22%                      ] exercise_10.nsys-rep[1/1] [===23%                      ] exercise_10.nsys-rep[1/1] [===24%                      ] exercise_10.nsys-rep[1/1] [====25%                     ] exercise_10.nsys-rep[1/1] [====26%                     ] exercise_10.nsys-rep[1/1] [====27%                     ] exercise_10.nsys-rep[1/1] [====28%                     ] exercise_10.nsys-rep[1/1] [=====29%                    ] exercise_10.nsys-rep[1/1] [=====30%                    ] exercise_10.nsys-rep[1/1] [=====31%                    ] exercise_10.nsys-rep[1/1] [=====32%                    ] exercise_10.nsys-rep[1/1] [======33%                   ] exercise_10.nsys-rep[1/1] [======34%                   ] exercise_10.nsys-rep[1/1] [======35%                   ] exercise_10.nsys-rep[1/1] [=======36%                  ] exercise_10.nsys-rep[1/1] [=======37%                  ] exercise_10.nsys-rep[1/1] [=======38%                  ] exercise_10.nsys-rep[1/1] [=======39%                  ] exercise_10.nsys-rep[1/1] [========40%                 ] exercise_10.nsys-rep[1/1] [========41%                 ] exercise_10.nsys-rep[1/1] [========42%                 ] exercise_10.nsys-rep[1/1] [=========43%                ] exercise_10.nsys-rep[1/1] [=========44%                ] exercise_10.nsys-rep[1/1] [=========45%                ] exercise_10.nsys-rep[1/1] [=========46%                ] exercise_10.nsys-rep[1/1] [==========47%               ] exercise_10.nsys-rep[1/1] [==========48%               ] exercise_10.nsys-rep[1/1] [==========49%               ] exercise_10.nsys-rep[1/1] [===========50%              ] exercise_10.nsys-rep[1/1] [===========51%              ] exercise_10.nsys-rep[1/1] [===========52%              ] exercise_10.nsys-rep[1/1] [===========53%              ] exercise_10.nsys-rep[1/1] [============54%             ] exercise_10.nsys-rep[1/1] [============55%             ] exercise_10.nsys-rep[1/1] [============56%             ] exercise_10.nsys-rep[1/1] [============57%             ] exercise_10.nsys-rep[1/1] [=============58%            ] exercise_10.nsys-rep[1/1] [=============59%            ] exercise_10.nsys-rep[1/1] [=============60%            ] exercise_10.nsys-rep[1/1] [==============61%           ] exercise_10.nsys-rep[1/1] [==============62%           ] exercise_10.nsys-rep[1/1] [==============63%           ] exercise_10.nsys-rep[1/1] [==============64%           ] exercise_10.nsys-rep[1/1] [===============65%          ] exercise_10.nsys-rep[1/1] [===============66%          ] exercise_10.nsys-rep[1/1] [===============67%          ] exercise_10.nsys-rep[1/1] [================68%         ] exercise_10.nsys-rep[1/1] [================69%         ] exercise_10.nsys-rep[1/1] [================70%         ] exercise_10.nsys-rep[1/1] [================71%         ] exercise_10.nsys-rep[1/1] [=================72%        ] exercise_10.nsys-rep[1/1] [=================73%        ] exercise_10.nsys-rep[1/1] [=================74%        ] exercise_10.nsys-rep[1/1] [==================75%       ] exercise_10.nsys-rep[1/1] [==================76%       ] exercise_10.nsys-rep[1/1] [========================100%] exercise_10.nsys-rep[1/1] [========================100%] exercise_10.nsys-rep
+Generated:
+    /zhome/45/3/213740/Python_and_HPC/exercise_10.nsys-rep
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 24907004: <Running_GPU_10> in cluster <dcc> Done
+
+Job <Running_GPU_10> was submitted from host <hpclogin1> by user <s242734> in cluster <dcc> at Sun May  4 20:13:00 2025
+Job was executed on host(s) <4*n-62-12-22>, in queue <c02613>, as user <s242734> in cluster <dcc> at Sun May  4 20:18:28 2025
+</zhome/45/3/213740> was used as the home directory.
+</zhome/45/3/213740/Python_and_HPC> was used as the working directory.
+Started at Sun May  4 20:18:28 2025
+Terminated at Sun May  4 20:21:27 2025
+Results reported at Sun May  4 20:21:27 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/sh
+#BSUB -q c02613
+#BSUB -J Running_GPU_10
+#BSUB -n 4
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=12GB]"
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -W 02:00
+#BSUB -o Running_GPU_10_%J.out
+#BSUB -e Running_GPU_10_%J.err
+
+
+source /dtu/projects/02613_2025/conda/conda_init.sh
+conda activate 02613
+
+nsys profile -o exercise_10 python exercise9_10.py 20
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   174.00 sec.
+    Max Memory :                                 839 MB
+    Average Memory :                             203.00 MB
+    Total Requested Memory :                     49152.00 MB
+    Delta Memory :                               48313.00 MB
+    Max Swap :                                   -
+    Max Processes :                              8
+    Max Threads :                                30
+    Run time :                                   181 sec.
+    Turnaround time :                            507 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <Running_GPU_10_24907004.err> for stderr output of this job.
+

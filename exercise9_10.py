@@ -85,3 +85,4 @@ if __name__ == '__main__':
     print(f"\n# GPU timing for {N} plans:            {elapsed:.2f} s")
     print(f"# Average time per plan:              {avg_per:.4f} s")
     print(f"# Estimated time for {total_plans} plans: {est_full/3600:.2f} h")
+    print(cp.cuda.runtime.getDeviceProperties(0))
