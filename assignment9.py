@@ -51,9 +51,9 @@ if __name__ == '__main__':
     all_interior_mask_np = cp.empty((N, 512, 512), dtype=bool)
     for i, bid in enumerate(building_ids):
         u0_gpu, mask_gpu = load_data(LOAD_DIR, bid)
-        all_u0_np[i] = cp.asnumpy(u0_gpu)
-        all_interior_mask_np[i] = cp.asnumpy(mask_gpu)
-    
+        all_u0_np[i, :, :] = cp.asnumpy(u0_gpu)
+        all_interior_mask_np[i, :, :] = cp.asnumpy(mask_gpu)
+
     
     all_u0 = cp.asarray(all_u0_np)
     all_interior_mask = cp.asarray(all_interior_mask_np)
