@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 
 # Import other Python files
 import simulate as hpc
-from Parallell_comp import parallell_main
-from simulate_GPU import main_optimized
+from Exercise_5_6 import parallell_main
+from exercise_12 import main_optimized
 
 # Directories
 BASE_DIR = os.getcwd()
@@ -22,7 +22,7 @@ os.makedirs(VIS_DIR, exist_ok=True)
 
 
 def visualize_data(building_ids):
-    """Visualize input floor-plan data for given buildings. Task 1"""
+    """Visualize input floor-plan data for given buildings. Exercise 1"""
     for bid in building_ids:
         domain = np.load(join(LOAD_DIR, f"{bid}_domain.npy"))
         interior = np.load(join(LOAD_DIR, f"{bid}_interior.npy"))
@@ -43,7 +43,7 @@ def visualize_data(building_ids):
 
 
 def time_reference(num_buildings, building_ids=None):
-    """Time the serial jacobi implementation for a subset of buildings. Task 2"""
+    """Time the serial jacobi implementation for a subset of buildings. Exercise 2"""
     with open(join(LOAD_DIR, 'building_ids.txt')) as f:
         all_ids = f.read().splitlines()
     if building_ids is None:
@@ -71,7 +71,7 @@ def time_reference(num_buildings, building_ids=None):
 
 
 def visualize_results(building_ids):
-    """Visualize before/after jacobi results for given buildings. Task 3"""
+    """Visualize before/after jacobi results for given buildings. Exercise 3"""
     for bid in building_ids:
         u0, mask = hpc.load_data(LOAD_DIR, bid)
         u_final = hpc.jacobi(u0, mask, MAX_ITER, ABS_TOL)
@@ -94,7 +94,7 @@ def visualize_results(building_ids):
 
 
 def profile_jacobi(sample_size=5):
-    """Profile the jacobi function on a small sample. Uncomment the @. Task 4."""
+    """Profile the jacobi function on a small sample. Uncomment the @. Exercise 4."""
     with open(join(LOAD_DIR, 'building_ids.txt')) as f:
         ids = f.read().splitlines()[:sample_size]
     for bid in ids:
@@ -136,13 +136,13 @@ def main():
     elif args.profile:
         profile_jacobi()
     elif args.static:
-        # This is Task 5
+        # This is Exercise 5
         parallell_main(all_ids, LOAD_DIR, 'static')
     elif args.dynamic:
-        # This is Task 6
+        # This is Exercise 6
         parallell_main(all_ids, LOAD_DIR, 'dynamic')
     elif args.optimized_final:
-        # This is Task 12
+        # This is Exercise 12
         all_N = 4571
         main_optimized(LOAD_DIR, all_N)
     else:
