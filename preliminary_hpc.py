@@ -7,6 +7,7 @@ from os.path import join
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Import other Python files
 import simulate as hpc
 from Parallell_comp import parallell_main
 from simulate_GPU import main_optimized
