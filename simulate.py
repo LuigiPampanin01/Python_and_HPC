@@ -1,24 +1,10 @@
 from os.path import join
 import sys
-import cupy as cp
-import numpy as np
-
-
+import time
 import numpy as np
 from os.path import join
 
 def load_data(load_dir, bid):
-    """
-    Load the initial grid and interior mask for the Jacobi iteration.
-    
-    Parameters:
-    - load_dir: directory containing the .npy files
-    - bid: base identifier (filename prefix) for the domain and mask files
-    
-    Returns:
-    - u: (SIZE+2)x(SIZE+2) array with boundary padding, containing initial values
-    - interior_mask: boolean mask indicating interior points where updates should occur
-    """
     SIZE = 512  # Grid size without boundaries
     u = np.zeros((SIZE + 2, SIZE + 2))  # Initialize grid with zero-padding for boundaries
     u[1:-1, 1:-1] = np.load(join(load_dir, f"{bid}_domain.npy"))  # Load domain values into interior
@@ -27,34 +13,13 @@ def load_data(load_dir, bid):
 
 # @profile  # Uncomment this if using a memory profiler like line_profiler
 def jacobi(u, interior_mask, max_iter, atol=1e-6):
-    """
-    Perform Jacobi iterations to approximate the solution to a Laplace-like PDE.
-    
-    Parameters:
-    - u: initial 2D grid with boundary padding
-    - interior_mask: boolean mask specifying which interior points to update
-    - max_iter: maximum number of iterations
-    - atol: absolute tolerance for convergence criterion
-    
-    Returns:
-    - u: updated 2D grid after Jacobi iterations
-    """
     u = np.copy(u)  # Avoid modifying the input array
 
     for i in range(max_iter):
-        # Compute the new values by averaging neighbors (Jacobi update)
         u_new = 0.25 * (u[1:-1, :-2] + u[1:-1, 2:] + u[:-2, 1:-1] + u[2:, 1:-1])
-
-        # Extract new values at the interior points
         u_new_interior = u_new[interior_mask]
-
-        # Compute the maximum absolute difference (convergence check)
         delta = np.abs(u[1:-1, 1:-1][interior_mask] - u_new_interior).max()
-
-        # Update only the interior points in u
         u[1:-1, 1:-1][interior_mask] = u_new_interior
-
-        # Stop iteration if solution has converged
         if delta < atol:
             break
 
@@ -81,6 +46,7 @@ if __name__ == '__main__':
     LOAD_DIR = '/dtu/projects/02613_2025/data/modified_swiss_dwellings/'
     with open(join(LOAD_DIR, 'building_ids.txt'), 'r') as f:
         building_ids = f.read().splitlines()
+    total_plans = len(building_ids)        
 
     if len(sys.argv) < 2:
         N = 1
@@ -100,10 +66,14 @@ if __name__ == '__main__':
     MAX_ITER = 20_000
     ABS_TOL = 1e-4
 
+    t_start = time.perf_counter()
+
     all_u = np.empty_like(all_u0)
     for i, (u0, interior_mask) in enumerate(zip(all_u0, all_interior_mask)):
         u = jacobi(u0, interior_mask, MAX_ITER, ABS_TOL)
         all_u[i] = u
+
+    t_end = time.perf_counter()
 
     # Print summary statistics in CSV format
     stat_keys = ['mean_temp', 'std_temp', 'pct_above_18', 'pct_below_15']
@@ -111,3 +81,12 @@ if __name__ == '__main__':
     for bid, u, interior_mask in zip(building_ids, all_u, all_interior_mask):
         stats = summary_stats(u, interior_mask)
         print(f"{bid},", ", ".join(str(stats[k]) for k in stat_keys))
+
+#       # Print timing summary
+    elapsed   = t_end - t_start
+    avg_per   = elapsed / N if N else float('nan')
+    est_full  = elapsed * total_plans / N if N else float('nan')
+
+    print(f"\n# GPU timing for {N} plans:            {elapsed:.2f} s")
+    print(f"# Average time per plan:              {avg_per:.4f} s")
+    print(f"# Estimated time for {total_plans} plans: {est_full/3600:.2f} h")
