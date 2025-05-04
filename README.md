@@ -46,7 +46,7 @@ conda activate 02613
 
 Each command should be run from the terminal:
 
-### 1. Visualize Input Data
+### 1. Visualize Input Data --Task 1
 
 Visualizes the domain and interior mask of a few sample buildings.
 
@@ -54,7 +54,7 @@ Visualizes the domain and interior mask of a few sample buildings.
 python preliminary_hpc.py --visualize-data
 ```
 
-### 2. Run Timing Benchmarks
+### 2. Run Timing Benchmarks -- TAsk 2
 
 Times the Jacobi solver for batches of 5, 10, and 20 buildings.
 
@@ -62,7 +62,7 @@ Times the Jacobi solver for batches of 5, 10, and 20 buildings.
 python preliminary_hpc.py --time
 ```
 
-### 3. Visualize Simulation Results
+### 3. Visualize Simulation Results -- Task 3
 
 Displays temperature distribution before and after simulation.
 
@@ -70,7 +70,7 @@ Displays temperature distribution before and after simulation.
 python preliminary_hpc.py --visualize-results
 ```
 
-### 4. Profile the Jacobi Function
+### 4. Profile the Jacobi Function -- Task 4
 
 Use `line_profiler` to profile the performance of the solver.
 To do that you need to uncomment @profile in the simulate.py in the jacobi function:
@@ -101,32 +101,38 @@ Replace `N` with the number of buildings (e.g. `10`).
 
 ### 6. Run simulation using Parallel Processing, either static or dynamic
 
-For static parallel processing, use the following command:
+For static parallel processing, use the following command: -- Task 5
 
 ```bash
 python preliminary_hpc.py --static 
 ```
 
-For dynamic parallel processing, use the following command:
+For dynamic parallel processing, use the following command: -- Task 6
 
 ```bash
 python preliminary_hpc.py --dynamic
 ```
 
 ### 7. Run the simulation using CuPy
-To run the simulation using CuPy, use the following command:
+To run the simulation using CuPy, use the following command: -- Task 9
 
 ```bash
 python preliminary_hpc.py --cupy
 ```
 This will use the GPU for the simulation, which can significantly speed up the computation time.
 
-To run an optimized version of the simulation using CuPy, use the following command:
+To run an optimized version of the simulation using CuPy, use the following command: -- Task 10
 
 ```bash
 python exercise9_10_opt.py
 ```
 This will use Elementwise operations and the GPU for the simulation, which can significantly speed up the computation time.
+
+### 8. To run the final simulation for all plans using the best optimized version:
+
+```bash
+python preliminary_hpc.py --optimized_final
+```
 
 
 The script will loop through 1,2,4,8 and 16 processes and run the simulation for each number of processes. The results will be plotted and saved in the `plots/` directory.
