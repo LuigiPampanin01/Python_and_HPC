@@ -87,6 +87,21 @@ Replace `N` with the number of buildings (e.g. `10`).
 
 ---
 
+### 6. Run simulation using Parallel Processing, either static or dynamic
+
+For static parallel processing, use the following command:
+
+```bash
+python preliminary_hpc.py --parallel 
+```
+
+For dynamic parallel processing, use the following command:
+
+```bash
+python preliminary_hpc.py --parallel --dynamic
+```
+
+The script will loop through 1,2,4,8 and 16 processes and run the simulation for each number of processes. The results will be plotted and saved in the `plots/` directory.
 ## 📊 Output
 
 - Figures of results are saved to:  

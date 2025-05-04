@@ -7,6 +7,7 @@ import simulate as hpc
 import os
 from multiprocessing.pool import ThreadPool
 import math
+from Parallell_comp import parallell_main
 
 
 # Results directory
@@ -147,6 +148,17 @@ if __name__ == '__main__':
             
         elif sys.argv[1] == "--profile":
             profile_jacobi()
+
+        elif sys.argv[1] == "--static":
+            # Static scheduling
+            print("Running with static scheduling...")
+            parallell_main(all_building_ids, LOAD_DIR, 'static')
+
+        elif sys.argv[1] == "--dynamic":
+            # Dynamic scheduling
+            print("Running with dynamic scheduling...")
+            parallell_main(all_building_ids, LOAD_DIR, 'dynamic')
+            
             
         else:
             try:
@@ -202,8 +214,10 @@ if __name__ == '__main__':
             print(f"{bid}, " + ", ".join(str(stats[k]) for k in stat_keys))
         
         print("\nRun with additional arguments to perform specific tasks:")
-        print("  python heat_diffusion_analysis.py --visualize-data    # Visualize input data")
-        print("  python heat_diffusion_analysis.py --time              # Run timing benchmarks")
-        print("  python heat_diffusion_analysis.py --visualize-results # Visualize simulation results")
-        print("  python heat_diffusion_analysis.py --profile           # Profile the jacobi function")
-        print("  python heat_diffusion_analysis.py N                   # Process N buildings (default: 1)")
+        print("  python preliminary_hpc.py --visualize-data    # Visualize input data")
+        print("  python preliminary_hpc.py --time              # Run timing benchmarks")
+        print("  python preliminary_hpc.py --visualize-results # Visualize simulation results")
+        print("  python preliminary_hpc.py --profile           # Profile the jacobi function")
+        print("  python preliminary_hpc.py N                   # Process N buildings (default: 1)")
+        print("  python preliminary_hpc.py --static             # Run static scheduling")
+        print("  python preliminary_hpc.py --dynamic            # Run dynamic scheduling")

@@ -3,6 +3,8 @@ import time
 from os.path import join
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
+MAX_ITER = 20_000
+ABS_TOL = 1e-4
 
 
 def load_data(load_dir, bid):
@@ -70,11 +72,7 @@ def run_dynamic(args_list, workers_list, chunksize=1):
     return times
 
 
-if __name__ == '__main__':
-    # Paths and IDs
-    LOAD_DIR = '/dtu/projects/02613_2025/data/modified_swiss_dwellings/'
-    with open(join(LOAD_DIR, 'building_ids.txt'), 'r') as f:
-        all_ids = f.read().splitlines()
+def parallell_main(all_ids, LOAD_DIR, mode):
 
     N = 96  # number of test plans
     building_ids = all_ids[:N]
@@ -84,36 +82,38 @@ if __name__ == '__main__':
         args_list.append((u0, mask))
 
     workers = [1, 2, 4, 8, 16]
-    MAX_ITER = 20000
-    ABS_TOL = 1e-4
 
-    # Run both experiments
-    static_times = run_static(args_list, workers)
-    dynamic_times = run_dynamic(args_list, workers, chunksize=1)
+    if mode == 'static':
+        times = run_static(args_list, workers)
+        label = 'Static'
+    elif mode == 'dynamic':
+        times = run_dynamic(args_list, workers, chunksize=1)
+        label = 'Dynamic'
+    else:
+        raise ValueError("Mode must be 'static' or 'dynamic'")
 
     # Compute speedups
-    serial = static_times[0]
-    static_speedup = [serial / t for t in static_times]
-    dynamic_speedup = [serial / t for t in dynamic_times]
+    serial_time = times[0]
+    speedups = [serial_time / t for t in times]
 
-    # Estimate parallel fraction for static
-    p_static = [estimate_parallel_fraction(s, n) for s, n in zip(static_speedup[1:], workers[1:])]
-    # Estimate for dynamic
-    p_dynamic = [estimate_parallel_fraction(s, n) for s, n in zip(dynamic_speedup[1:], workers[1:])]
+    # Estimate parallel fractions (ignore the 1-worker case)
+    fractions = [estimate_parallel_fraction(s, n)
+                 for s, n in zip(speedups[1:], workers[1:])]
 
-    print(f"\nStatic avg parallel fraction: {np.mean(p_static):.4f}")
-    print(f"Dynamic avg parallel fraction: {np.mean(p_dynamic):.4f}")
+    avg_fraction = np.mean(fractions)
+    print(f"{label} avg parallel fraction: {avg_fraction:.4f}")
 
     # Plot results
     plt.figure(figsize=(8, 6))
-    plt.plot(workers, static_speedup, 'o-', label='Static')
-    plt.plot(workers, dynamic_speedup, 's-', label='Dynamic')
+    plt.plot(workers, speedups, 'o-', label=label)
     plt.plot(workers, workers, 'k--', label='Ideal')
     plt.xlabel('Number of Workers')
     plt.ylabel('Speed-up')
-    plt.title('Speed-up: Static vs Dynamic Scheduling')
+    plt.title(f'Speed-up: {label} Scheduling')
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig('speedup_comparison.png')
+    out_file = f'speedup_{mode}.png'
+    plt.savefig(out_file)
     plt.show()
+    print(f"Plot saved to {out_file}")
