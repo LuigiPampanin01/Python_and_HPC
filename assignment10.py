@@ -1,13 +1,12 @@
 from os.path import join
 import sys
 import cupy as cp  # Changed from numpy to cupy
-import numpy as np
 
 def load_data(load_dir, bid):
     SIZE = 512
     u = cp.zeros((SIZE + 2, SIZE + 2))
-    u[1:-1, 1:-1] = cp.asarray(np.load(join(load_dir, f"{bid}_domain.npy")))  # Convert to CuPy
-    interior_mask = cp.asarray(np.load(join(load_dir, f"{bid}_interior.npy")))  # Convert to CuPy
+    u[1:-1, 1:-1] = cp.asarray(cp.load(join(load_dir, f"{bid}_domain.npy")))  # Convert to CuPy
+    interior_mask = cp.asarray(cp.load(join(load_dir, f"{bid}_interior.npy")))  # Convert to CuPy
     return u, interior_mask
 
 def jacobi(u, interior_mask, max_iter, atol=1e-6):
@@ -43,8 +42,8 @@ if __name__ == '__main__':
     building_ids = building_ids[:N]
 
     # Load data into NumPy first, then convert to CuPy
-    all_u0_np = np.empty((N, 514, 514))
-    all_interior_mask_np = np.empty((N, 512, 512), dtype='bool')
+    all_u0_np = cp.empty((N, 514, 514))
+    all_interior_mask_np = cp.empty((N, 512, 512), dtype='bool')
     for i, bid in enumerate(building_ids):
         u0_np, interior_mask_np = load_data(LOAD_DIR, bid)
         all_u0_np[i] = cp.asnumpy(u0_np)  # Temporarily convert back to NumPy for storage

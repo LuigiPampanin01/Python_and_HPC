@@ -1,14 +1,13 @@
 from os.path import join
 import sys
 import time 
-import cupy as cp  
-import numpy as np
+import cupy as cp 
 
 def load_data(load_dir, bid):
     SIZE = 512
     u = cp.zeros((SIZE + 2, SIZE + 2))
-    u[1:-1, 1:-1] = cp.asarray(np.load(join(load_dir, f"{bid}_domain.npy")))
-    interior_mask = cp.asarray(np.load(join(load_dir, f"{bid}_interior.npy")))
+    u[1:-1, 1:-1] = cp.asarray(cp.load(join(load_dir, f"{bid}_domain.npy")))
+    interior_mask = cp.asarray(cp.load(join(load_dir, f"{bid}_interior.npy")))
     return u, interior_mask
 
 def jacobi(u, interior_mask, max_iter, atol=1e-6):
@@ -48,8 +47,8 @@ if __name__ == '__main__':
     building_ids = all_building_ids[:N]
 
     
-    all_u0_np = np.empty((N, 514, 514))
-    all_interior_mask_np = np.empty((N, 512, 512), dtype=bool)
+    all_u0_np = cp.empty((N, 514, 514))
+    all_interior_mask_np = cp.empty((N, 512, 512), dtype=bool)
     for i, bid in enumerate(building_ids):
         u0_gpu, mask_gpu = load_data(LOAD_DIR, bid)
         all_u0_np[i] = cp.asnumpy(u0_gpu)
