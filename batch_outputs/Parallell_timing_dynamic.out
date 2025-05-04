@@ -1,0 +1,72 @@
+Running with 1 worker(s)...
+Elapsed time: 1051.46 seconds
+Running with 2 worker(s)...
+Elapsed time: 579.21 seconds
+Running with 4 worker(s)...
+Elapsed time: 349.30 seconds
+Running with 8 worker(s)...
+Elapsed time: 232.13 seconds
+Running with 16 worker(s)...
+Elapsed time: 165.15 seconds
+
+Estimated parallel fraction (average over runs): 0.8946
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 24832298: <Parallell_Timing> in cluster <dcc> Done
+
+Job <Parallell_Timing> was submitted from host <hpclogin1> by user <s242755> in cluster <dcc> at Tue Apr 29 21:05:22 2025
+Job was executed on host(s) <16*n-62-31-21>, in queue <hpc>, as user <s242755> in cluster <dcc> at Tue Apr 29 21:05:23 2025
+</zhome/c7/7/213796> was used as the home directory.
+</zhome/c7/7/213796/HPC/final_assignment> was used as the working directory.
+Started at Tue Apr 29 21:05:23 2025
+Terminated at Tue Apr 29 21:45:05 2025
+Results reported at Tue Apr 29 21:45:05 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J Parallell_Timing
+#BSUB -q hpc
+#BSUB -W 01:00
+#BSUB -n 16
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=1GB]"
+#BSUB -o Parallell_%J.out
+#BSUB -e Parallell_%J.err
+#BSUB -R "select[model == XeonGold6126]"
+
+# Load environment and activate Conda
+source /dtu/projects/02613_2025/conda/conda_init.sh
+conda activate 02613
+
+# Run the script with the expected input file
+python Paralell_timing.py
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   7526.90 sec.
+    Max Memory :                                 1189 MB
+    Average Memory :                             709.05 MB
+    Total Requested Memory :                     16384.00 MB
+    Delta Memory :                               15195.00 MB
+    Max Swap :                                   -
+    Max Processes :                              20
+    Max Threads :                                24
+    Run time :                                   2392 sec.
+    Turnaround time :                            2383 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <Parallell_24832298.err> for stderr output of this job.
+
