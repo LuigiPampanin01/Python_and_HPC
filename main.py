@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 
 import simulate as hpc
 from Parallell_comp import parallell_main
+from simulate_GPU import main_optimized
 
 # Directories
 BASE_DIR = os.getcwd()
@@ -112,6 +113,7 @@ def main():
     group.add_argument("--dynamic", action='store_true')
     parser.add_argument("N", type=int, nargs='?', default=1,
                         help="Number of buildings to process (default=1)")
+    parser.add_argument("--optimized_final", action='store_true')
     args = parser.parse_args()
 
     # Constants
@@ -138,6 +140,10 @@ def main():
     elif args.dynamic:
         # This is Task 6
         parallell_main(all_ids, LOAD_DIR, 'dynamic')
+    elif args.optimized_final:
+        # This is Task 12
+        all_N = 4571
+        main_optimized(LOAD_DIR, all_N)
     else:
         # default: process N buildings and print stats
         ids = all_ids[:args.N]
