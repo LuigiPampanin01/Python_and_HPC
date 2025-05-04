@@ -1,12 +1,12 @@
 #!/bin/bash
-#BSUB -J test_job
+#BSUB -J refrence_9
 #BSUB -q hpc
 #BSUB -W 01:00
 #BSUB -n 16
 #BSUB -R "span[hosts=1]"
 #BSUB -R "rusage[mem=1GB]"
-#BSUB -o Test_job_%J.out
-#BSUB -e Test_job_%J.err
+#BSUB -o  refrence_9_%J.out
+#BSUB -e  refrence_9_%J.err
 #BSUB -R "select[model == XeonGold6126]"
 
 # Load environment and activate Conda
