@@ -60,46 +60,6 @@ def jacobi(u, interior_mask, max_iter, atol=1e-6):
 
     return u
 
-
-
-# def jacobi(u, interior_mask, max_iter, atol=1e-6):
-#     """
-#     Perform Jacobi iterations on the GPU using CuPy to approximate the solution to a Laplace-like PDE.
-
-#     Parameters:
-#     - u: initial 2D NumPy array with boundary padding
-#     - interior_mask: boolean NumPy array indicating interior points
-#     - max_iter: maximum number of iterations
-#     - atol: absolute tolerance for convergence
-
-#     Returns:
-#     - u: updated 2D NumPy array after Jacobi iterations
-#     """
-#     # Convert inputs to CuPy arrays (GPU)
-#     u = cp.asarray(u)
-#     interior_mask = cp.asarray(interior_mask)
-
-#     # Copy to avoid modifying input
-#     u = cp.copy(u)
-
-#     for i in range(max_iter):
-#         # Jacobi update: average of neighbors
-#         u_new = 0.25 * (u[1:-1, :-2] + u[1:-1, 2:] + u[:-2, 1:-1] + u[2:, 1:-1])
-
-#         # Compute update only on interior points
-#         u_new_interior = u_new[interior_mask]
-#         delta = cp.abs(u[1:-1, 1:-1][interior_mask] - u_new_interior).max()
-
-#         # Update interior in u
-#         u[1:-1, 1:-1][interior_mask] = u_new_interior
-
-#         if delta < atol:
-#             break
-
-#     # Return result to CPU (NumPy array)
-#     return u.get()
-
-
 def summary_stats(u, interior_mask):
     u_interior = u[1:-1, 1:-1][interior_mask]
     mean_temp = u_interior.mean()
@@ -114,6 +74,8 @@ def summary_stats(u, interior_mask):
     }
 
 
+
+# If running standalone other than that we use the preliminary_hpc.py
 if __name__ == '__main__':
     # Load data
     LOAD_DIR = '/dtu/projects/02613_2025/data/modified_swiss_dwellings/'

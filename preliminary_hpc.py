@@ -5,8 +5,6 @@ from os.path import join
 import sys
 import simulate as hpc
 import os
-from multiprocessing.pool import ThreadPool
-import math
 from Parallell_comp import parallell_main
 
 

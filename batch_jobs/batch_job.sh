@@ -14,5 +14,4 @@ source /dtu/projects/02613_2025/conda/conda_init.sh
 conda activate 02613
 
 # Run the script with the expected input file
-python preliminary_hpc.py --static
-
+python main.py --visualize-data
