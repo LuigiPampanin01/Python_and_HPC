@@ -1,0 +1,64 @@
+Average mean temperature: 14.69 °C
+Average temperature standard deviation: 6.80 °C
+Buildings with ≥50% of area above 18°C: 804
+Buildings with ≥50% of area below 15°C: 2471
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 24904522: <test_job> in cluster <dcc> Done
+
+Job <test_job> was submitted from host <hpclogin1> by user <s242755> in cluster <dcc> at Sun May  4 17:40:30 2025
+Job was executed on host(s) <16*n-62-31-16>, in queue <hpc>, as user <s242755> in cluster <dcc> at Sun May  4 17:40:31 2025
+</zhome/c7/7/213796> was used as the home directory.
+</zhome/c7/7/213796/HPC/final_assignment/Python_and_HPC> was used as the working directory.
+Started at Sun May  4 17:40:31 2025
+Terminated at Sun May  4 17:40:35 2025
+Results reported at Sun May  4 17:40:35 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J test_job
+#BSUB -q hpc
+#BSUB -W 01:00
+#BSUB -n 16
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=1GB]"
+#BSUB -o Test_job_%J.out
+#BSUB -e Test_job_%J.err
+#BSUB -R "select[model == XeonGold6126]"
+
+# Load environment and activate Conda
+source /dtu/projects/02613_2025/conda/conda_init.sh
+conda activate 02613
+
+# Run the script with the expected input file
+python plot_histogram.py
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   3.28 sec.
+    Max Memory :                                 -
+    Average Memory :                             -
+    Total Requested Memory :                     16384.00 MB
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   122 sec.
+    Turnaround time :                            5 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <Test_job_24904522.err> for stderr output of this job.
+
