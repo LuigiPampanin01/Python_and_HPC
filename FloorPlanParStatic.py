@@ -60,7 +60,8 @@ for num_workers in WORKERS_LIST:
     print(f"Running with {num_workers} worker(s)...")
     start = time.perf_counter()
     with Pool(processes=num_workers) as pool:
-        results = pool.map(solve_one, args_list)
+        results = pool.map(solve_one, args_list) # Static Scheduling
+        #results = pool.map(solve_one, args_list, chunksize=1) # For Dynamic Scheduling
     end = time.perf_counter()
     elapsed = end - start
     times.append(elapsed)
