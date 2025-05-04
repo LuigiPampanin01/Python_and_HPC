@@ -1,6 +1,6 @@
 from os.path import join
 import sys
-
+import cupy as cp
 import numpy as np
 
 
@@ -60,7 +60,6 @@ def jacobi(u, interior_mask, max_iter, atol=1e-6):
 
     return u
 
-import cupy as cp
 
 
 # def jacobi(u, interior_mask, max_iter, atol=1e-6):
