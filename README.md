@@ -7,9 +7,21 @@ This script, `preliminary_hpc.py`, is designed for simulating and analyzing heat
 ## 📁 Project Structure
 
 ```text
-preliminary_hpc.py
-simulate.py
+preliminary_hpc.py # Main script
+simulate.py 
+exercise5_6.py
+exercise9_10.py
+exercise9_10_opt.py
+exercise12.py
+exercise12_hist.py
 results/         # Directory to save results
+plots/           # Directory to save plots
+batch_output/      # Directory to save batch output
+batch_errors/       # Directory to save batch errors
+batch_jobs/        # Directory to save batch jobs
+    ├── batch_job_GPU.sh
+    ├── batch_job_timing.sh
+    └── batch_job_CPU.sh
 visualization/    # Directory to save initial state
 /dtu/projects/02613_2025/data/modified_swiss_dwellings/
     ├── building_ids.txt
@@ -92,14 +104,30 @@ Replace `N` with the number of buildings (e.g. `10`).
 For static parallel processing, use the following command:
 
 ```bash
-python preliminary_hpc.py --parallel 
+python preliminary_hpc.py --static 
 ```
 
 For dynamic parallel processing, use the following command:
 
 ```bash
-python preliminary_hpc.py --parallel --dynamic
+python preliminary_hpc.py --dynamic
 ```
+
+### 7. Run the simulation using CuPy
+To run the simulation using CuPy, use the following command:
+
+```bash
+python preliminary_hpc.py --cupy
+```
+This will use the GPU for the simulation, which can significantly speed up the computation time.
+
+To run an optimized version of the simulation using CuPy, use the following command:
+
+```bash
+python exercise9_10_opt.py
+```
+This will use Elementwise operations and the GPU for the simulation, which can significantly speed up the computation time.
+
 
 The script will loop through 1,2,4,8 and 16 processes and run the simulation for each number of processes. The results will be plotted and saved in the `plots/` directory.
 ## 📊 Output
