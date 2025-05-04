@@ -1,221 +1,160 @@
+import os
+import sys
+import time
+import argparse
+from os.path import join
+
 import numpy as np
 import matplotlib.pyplot as plt
-import time
-from os.path import join
-import sys
+
 import simulate as hpc
-import os
 from Parallell_comp import parallell_main
+from simulate_GPU import main_optimized
+
+# Directories
+BASE_DIR = os.getcwd()
+LOAD_DIR = '/dtu/projects/02613_2025/data/modified_swiss_dwellings/'
+RESULTS_DIR = join(BASE_DIR, "results")
+VIS_DIR = join(BASE_DIR, "visualization")
+os.makedirs(RESULTS_DIR, exist_ok=True)
+os.makedirs(VIS_DIR, exist_ok=True)
 
 
-# Results directory
-save_dir_results = os.path.join(os.getcwd(), "results/")
-os.makedirs(save_dir_results, exist_ok=True)
-
-# Visualization directory
-save_dir_visualization = os.path.join(os.getcwd(), "visualization/")
-os.makedirs(save_dir_visualization, exist_ok=True)
-
-def visualize_data(load_dir, building_ids):
-    """Task 1: Visualize the input data for floor plans"""
+def visualize_data(building_ids):
+    """Visualize input floor-plan data for given buildings. Task 1"""
     for bid in building_ids:
-        domain = np.load(join(load_dir, f"{bid}_domain.npy"))
-        interior = np.load(join(load_dir, f"{bid}_interior.npy"))
-        
+        domain = np.load(join(LOAD_DIR, f"{bid}_domain.npy"))
+        interior = np.load(join(LOAD_DIR, f"{bid}_interior.npy"))
+
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
-        
-        # Plot domain (initial temperatures)
         im1 = ax1.imshow(domain, cmap='hot')
         ax1.set_title(f"Building {bid} - Initial Temperature")
         plt.colorbar(im1, ax=ax1, label='Temperature')
-        
+
         ax2.imshow(interior, cmap='binary')
         ax2.set_title(f"Building {bid} - Interior Mask")
-        
-        plt.tight_layout()
-        plt.savefig(f"{save_dir_visualization}building_{bid}_data.png")
-        plt.close()
-        print(f"Visualized data for building {bid}")
 
-def time_execution(num_buildings):
-    """Task 2: Time the reference implementation"""
+        plt.tight_layout()
+        outfile = join(VIS_DIR, f"building_{bid}_data.png")
+        plt.savefig(outfile)
+        plt.close(fig)
+        print(f"Saved visualization: {outfile}")
+
+
+def time_reference(num_buildings, building_ids=None):
+    """Time the serial jacobi implementation for a subset of buildings. Task 2"""
+    with open(join(LOAD_DIR, 'building_ids.txt')) as f:
+        all_ids = f.read().splitlines()
+    if building_ids is None:
+        building_ids = all_ids[:num_buildings]
+    total = len(all_ids)
+
     # Load data
-    LOAD_DIR = '/dtu/projects/02613_2025/data/modified_swiss_dwellings/'
-    with open(join(LOAD_DIR, 'building_ids.txt'), 'r') as f:
-        all_building_ids = f.read().splitlines()
-        total_buildings = len(all_building_ids)
-        building_ids = all_building_ids[:num_buildings]
-    
-    all_u0 = []
-    all_interior_mask = []
-    load_start = time.time()
-    for bid in building_ids:
-        u0, interior_mask = hpc.load_data(LOAD_DIR, bid)
-        all_u0.append(u0)
-        all_interior_mask.append(interior_mask)
-    load_end = time.time()
-    load_time = load_end - load_start
-    
-    MAX_ITER = 20_000
-    ABS_TOL = 1e-4
-    
-    start_time = time.time()
-    for u0, interior_mask in zip(all_u0, all_interior_mask):
-        hpc.jacobi(u0, interior_mask, MAX_ITER, ABS_TOL)
-    end_time = time.time()
-    
-    computation_time = end_time - start_time
-    total_time = load_time + computation_time
-    
-    print(f"\n--- Timing Results for {num_buildings} buildings ---")
-    print(f"Data loading time: {load_time:.2f} seconds")
-    print(f"Computation time: {computation_time:.2f} seconds")
-    print(f"Total time: {total_time:.2f} seconds")
-    print(f"Average time per building: {total_time/num_buildings:.2f} seconds")
-    estimated_total = total_time/num_buildings * total_buildings
-    print(f"Estimated time for all {total_buildings} buildings: {estimated_total:.2f} seconds ({estimated_total/60:.2f} minutes)")
-    
-    return total_time/num_buildings
+    t0 = time.time()
+    data = [hpc.load_data(LOAD_DIR, bid) for bid in building_ids]
+    load_time = time.time() - t0
 
-def visualize_results(load_dir, building_ids):
-    """Task 3: Visualize the simulation results"""
-    MAX_ITER = 20_000
-    ABS_TOL = 1e-4
-    
+    # Compute
+    t1 = time.time()
+    for u0, mask in data:
+        hpc.jacobi(u0, mask, MAX_ITER, ABS_TOL)
+    comp_time = time.time() - t1
+
+    avg = (load_time + comp_time) / len(building_ids)
+    est_total = avg * total
+
+    print(f"Processed {len(building_ids)} of {total} buildings.")
+    print(f"Data load: {load_time:.2f}s, compute: {comp_time:.2f}s")
+    print(f"Avg per building: {avg:.2f}s, est. all: {est_total:.2f}s ({est_total/60:.2f}m)")
+    return avg
+
+
+def visualize_results(building_ids):
+    """Visualize before/after jacobi results for given buildings. Task 3"""
     for bid in building_ids:
-        u0, interior_mask = hpc.load_data(load_dir, bid)
-        
-        u_final = hpc.jacobi(u0, interior_mask, MAX_ITER, ABS_TOL)
-        
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
-        
-        # Before
-        im1 = ax1.imshow(u0[1:-1, 1:-1], cmap='hot')
-        ax1.set_title(f"Building {bid} - Initial Temperature")
-        plt.colorbar(im1, ax=ax1, label='Temperature')
-        
-        # After
-        im2 = ax2.imshow(u_final[1:-1, 1:-1], cmap='hot')
-        ax2.set_title(f"Building {bid} - Final Temperature")
-        plt.colorbar(im2, ax=ax2, label='Temperature')
-        
+        u0, mask = hpc.load_data(LOAD_DIR, bid)
+        u_final = hpc.jacobi(u0, mask, MAX_ITER, ABS_TOL)
+
+        fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+        for ax, data, title in zip(
+            axes,
+            [u0[1:-1,1:-1], u_final[1:-1,1:-1]],
+            ['Initial', 'Final']
+        ):
+            im = ax.imshow(data, cmap='hot')
+            ax.set_title(f"Building {bid} - {title} Temperature")
+            plt.colorbar(im, ax=ax, label='Temperature')
+
         plt.tight_layout()
-        plt.savefig(f"{save_dir_results}building_{bid}_before_after.png")
-        plt.close()
-        print(f"Visualized results for building {bid}")
+        outfile = join(RESULTS_DIR, f"building_{bid}_before_after.png")
+        plt.savefig(outfile)
+        plt.close(fig)
+        print(f"Saved results visualization: {outfile}")
 
-def profile_jacobi():
-    """Task 4: Profile the jacobi function
-    
-    Note: This function is meant to be run with kernprof:
-    kernprof -l -v heat_diffusion_analysis.py --profile
-    """
-    LOAD_DIR = '/dtu/projects/02613_2025/data/modified_swiss_dwellings/'
-    with open(join(LOAD_DIR, 'building_ids.txt'), 'r') as f:
-        building_ids = f.read().splitlines()[:5]
-    
-    for bid in building_ids:
-        u0, interior_mask = hpc.load_data(LOAD_DIR, bid)
-        # Run jacobi
-        hpc.jacobi(u0, interior_mask, max_iter=20_000, atol=1e-4)
-    
-    print("Profiling completed. Run 'python -m line_profiler heat_diffusion_analysis.py.lprof' to see results.")
+
+def profile_jacobi(sample_size=5):
+    """Profile the jacobi function on a small sample. Uncomment the @. Task 4."""
+    with open(join(LOAD_DIR, 'building_ids.txt')) as f:
+        ids = f.read().splitlines()[:sample_size]
+    for bid in ids:
+        u0, mask = hpc.load_data(LOAD_DIR, bid)
+        hpc.jacobi(u0, mask, max_iter=MAX_ITER, atol=ABS_TOL)
+    print("Profiling complete. Use line_profiler to inspect.")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Heat diffusion analysis tasks.")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--visualize-data", action='store_true')
+    group.add_argument("--time", action='store_true')
+    group.add_argument("--visualize-results", action='store_true')
+    group.add_argument("--profile", action='store_true')
+    group.add_argument("--static", action='store_true')
+    group.add_argument("--dynamic", action='store_true')
+    parser.add_argument("N", type=int, nargs='?', default=1,
+                        help="Number of buildings to process (default=1)")
+    parser.add_argument("--optimized_final", action='store_true')
+    args = parser.parse_args()
+
+    # Constants
+    global MAX_ITER, ABS_TOL
+    MAX_ITER = 20_000
+    ABS_TOL = 1e-4
+
+    with open(join(LOAD_DIR, 'building_ids.txt')) as f:
+        all_ids = f.read().splitlines()
+    sample_ids = all_ids[:max(args.N, 3)]
+
+    if args.visualize_data:
+        visualize_data(sample_ids)
+    elif args.time:
+        for size in [5, 10, 20]:
+            time_reference(size)
+    elif args.visualize_results:
+        visualize_results(sample_ids)
+    elif args.profile:
+        profile_jacobi()
+    elif args.static:
+        # This is Task 5
+        parallell_main(all_ids, LOAD_DIR, 'static')
+    elif args.dynamic:
+        # This is Task 6
+        parallell_main(all_ids, LOAD_DIR, 'dynamic')
+    elif args.optimized_final:
+        # This is Task 12
+        all_N = 4571
+        main_optimized(LOAD_DIR, all_N)
+    else:
+        # default: process N buildings and print stats
+        ids = all_ids[:args.N]
+        stats_keys = ['mean_temp', 'std_temp', 'pct_above_18', 'pct_below_15']
+        print('building_id, ' + ', '.join(stats_keys))
+        for bid in ids:
+            u0, mask = hpc.load_data(LOAD_DIR, bid)
+            u = hpc.jacobi(u0, mask, MAX_ITER, ABS_TOL)
+            stats = hpc.summary_stats(u, mask)
+            values = ', '.join(str(stats[k]) for k in stats_keys)
+            print(f"{bid}, {values}")
 
 if __name__ == '__main__':
-
-    LOAD_DIR = '/dtu/projects/02613_2025/data/modified_swiss_dwellings/'
-
-    # Get all building IDs
-    with open(join(LOAD_DIR, 'building_ids.txt'), 'r') as f:
-        all_building_ids = f.read().splitlines()
-
-    if len(sys.argv) > 1:
-        if sys.argv[1] == "--visualize-data":
-            sample_ids = all_building_ids[:3]
-            visualize_data(LOAD_DIR, sample_ids)
-            
-        elif sys.argv[1] == "--time":
-            batch_sizes = [5, 10, 20]
-            for size in batch_sizes:
-                time_execution(size)
-                
-                
-        elif sys.argv[1] == "--visualize-results":
-            sample_ids = all_building_ids[:3]
-            visualize_results(LOAD_DIR, sample_ids)
-            
-        elif sys.argv[1] == "--profile":
-            profile_jacobi()
-
-        elif sys.argv[1] == "--static":
-            # Static scheduling
-            print("Running with static scheduling...")
-            parallell_main(all_building_ids, LOAD_DIR, 'static')
-
-        elif sys.argv[1] == "--dynamic":
-            # Dynamic scheduling
-            print("Running with dynamic scheduling...")
-            parallell_main(all_building_ids, LOAD_DIR, 'dynamic')
-            
-            
-        else:
-            try:
-                N = int(sys.argv[1])
-                building_ids = all_building_ids[:N]
-
-                all_u0 = np.empty((N, 514, 514))
-                all_interior_mask = np.empty((N, 512, 512), dtype='bool')
-                for i, bid in enumerate(building_ids):
-                    u0, interior_mask = hpc.load_data(LOAD_DIR, bid)
-                    all_u0[i] = u0
-                    all_interior_mask[i] = interior_mask
-                MAX_ITER = 20_000
-                ABS_TOL = 1e-4
-
-                all_u = np.empty_like(all_u0)
-                for i, (u0, interior_mask) in enumerate(zip(all_u0, all_interior_mask)):
-                    u = hpc.jacobi(u0, interior_mask, MAX_ITER, ABS_TOL)
-                    all_u[i] = u
-
-                # Print summary statistics in CSV format
-                stat_keys = ['mean_temp', 'std_temp', 'pct_above_18', 'pct_below_15']
-                print('building_id, ' + ', '.join(stat_keys))  # CSV header
-                for bid, u, interior_mask in zip(building_ids, all_u, all_interior_mask):
-                    stats = hpc.summary_stats(u, interior_mask)
-                    print(f"{bid}, " + ", ".join(str(stats[k]) for k in stat_keys))
-            except ValueError:
-                print(f"Invalid argument: {sys.argv[1]}")
-                print("Usage: python heat_diffusion_analysis.py [N|--visualize-data|--time|--visualize-results|--profile]")
-    else:
-        N = 1
-        building_ids = all_building_ids[:N]
-        
-        all_u0 = np.empty((N, 514, 514))
-        all_interior_mask = np.empty((N, 512, 512), dtype='bool')
-        for i, bid in enumerate(building_ids):
-            u0, interior_mask = hpc.load_data(LOAD_DIR, bid)
-            all_u0[i] = u0
-            all_interior_mask[i] = interior_mask
-
-        MAX_ITER = 20_000
-        ABS_TOL = 1e-4
-
-        all_u = np.empty_like(all_u0)
-        for i, (u0, interior_mask) in enumerate(zip(all_u0, all_interior_mask)):
-            u = hpc.jacobi(u0, interior_mask, MAX_ITER, ABS_TOL)
-            all_u[i] = u
-
-        stat_keys = ['mean_temp', 'std_temp', 'pct_above_18', 'pct_below_15']
-        print('building_id, ' + ', '.join(stat_keys))  # CSV header
-        for bid, u, interior_mask in zip(building_ids, all_u, all_interior_mask):
-            stats = hpc.summary_stats(u, interior_mask)
-            print(f"{bid}, " + ", ".join(str(stats[k]) for k in stat_keys))
-        
-        print("\nRun with additional arguments to perform specific tasks:")
-        print("  python preliminary_hpc.py --visualize-data    # Visualize input data")
-        print("  python preliminary_hpc.py --time              # Run timing benchmarks")
-        print("  python preliminary_hpc.py --visualize-results # Visualize simulation results")
-        print("  python preliminary_hpc.py --profile           # Profile the jacobi function")
-        print("  python preliminary_hpc.py N                   # Process N buildings (default: 1)")
-        print("  python preliminary_hpc.py --static             # Run static scheduling")
-        print("  python preliminary_hpc.py --dynamic            # Run dynamic scheduling")
+    main()
